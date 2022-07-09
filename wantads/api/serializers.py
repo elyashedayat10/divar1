@@ -62,3 +62,25 @@ class BookmarkSerializer(serializers.ModelSerializer):
         model = Bookmark
         fields = ("user", "want")
         read_only_fields = ("user",)
+
+        
+        
+        
+        
+class WandAdCreateSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = WantAd
+        fields = (
+            'id',
+            'title',
+            'description',
+            'active_chat',
+            'category',
+            'city',
+            'zone',
+            'lat',
+            'long',
+            'show_phone',
+            'data',
+        )
+        read_only_fields = ('id',)        
