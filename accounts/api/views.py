@@ -41,9 +41,7 @@ class SendOtpApiView(GenericAPIView):
     
 class VerifyApiView(GenericAPIView):
     serializer_class = VerifySerializer
-    permission_classes = [
-        AllowAny,
-    ]
+
 
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
