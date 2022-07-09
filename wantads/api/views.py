@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from categories.api.serializers import CategorySerializer
 from categories.models import Category
 
-from ..models import Bookmark, Note, Viewed, WantAd
+from ..models import Bookmark, Note, Viewed, WantAd,Image
 from .serializers import BookmarkSerializer, NoteSerializer, WandAdSerializers,WandAdCreateSerializers
 
 
