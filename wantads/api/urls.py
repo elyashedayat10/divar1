@@ -7,6 +7,7 @@ from .views import (
     NoteApiView,
     ViewedApiView,
     WantAdRetrieveAPIView,
+    WantCreateApiView,
 )
 
 app_name = "want_ad"
@@ -17,4 +18,5 @@ urlpatterns = [
     path("recent_seen/", ViewedApiView.as_view(), name="seen"),
     path("bookmark/", BookmarkApiView.as_view(), name="bookmark"),
     path("note/", NoteApiView.as_view(), name="note"),
+    path('create/',WantCreateApiView.as_view(),name='create'),
 ]
