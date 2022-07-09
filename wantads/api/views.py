@@ -179,3 +179,39 @@ class ViewedApiView(generics.GenericAPIView):
             "data": serializer,
         }
         return Response(data=context, status=status.HTTP_200_OK)
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+class WantCreateApiView(generics.GenericAPIView):
+    serializer_class = WandAdCreateSerializers
+
+    # permission_classes = [AllowAny,]
+
+    def post(self, request, *args, **kwargs):
+        images_data = request.FILES
+        serializer = WandAdCreateSerializers(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            want_id=serializer.save(user=request.user, confirmed=True)
+            for image_data in images_data.values():
+                Image.objects.create(want_id=want_id.id, image=image_data)
+            context = {
+                "is_done": True,
+                "message": "با موفقیا ساخته شد ",
+                "data": serializer.data,
+            }
+            return Response(data=context, status=status.HTTP_201_CREATED)
+        context = {
+            "is_done": False,
+            "message": "خطا ",
+            "data": serializer.errorse,
+        }
+        return Response(data=context, status=status.HTTP_400_BAD_REQUEST)    
+    
