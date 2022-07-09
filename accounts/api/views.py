@@ -39,7 +39,7 @@ class SendOtpApiView(GenericAPIView):
 
     
     
-class VerifyApiView(generics.GenericAPIView):
+class VerifyApiView(GenericAPIView):
     serializer_class = VerifySerializer
     permission_classes = [
         AllowAny,
