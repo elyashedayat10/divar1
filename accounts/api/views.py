@@ -37,48 +37,60 @@ class SendOtpApiView(GenericAPIView):
         return Response(data=context, status=status.HTTP_400_BAD_REQUEST)
 
 
-class VerifyApiView(GenericAPIView):
+    
+    
+class VerifyApiView(generics.GenericAPIView):
     serializer_class = VerifySerializer
+    permission_classes = [
+        AllowAny,
+    ]
 
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            phone_number, code = (
-                serializer.validated_data["phone_number"],
-                serializer.validated_data["code"],
-            )
-            otp_obj = OtpCode.objects.filter(phone_number=phone_number)
-            if otp_obj.code == str(code):
+            phone_number = serializer.validated_data["phone_number"]
+            code = serializer.validated_data["code"]
+            otp_obj = OtpCode.objects.get(phone_number=phone_number)
+            if otp_obj and otp_obj.code == code:
                 try:
                     user_obj = user.objects.get(phone_number=phone_number)
-                    token, create = Token.objects.get_or_create(user_id=user_obj.id)
+                    token, created = Token.objects.get_or_create(user=user_obj)
                     context = {
                         "is_done": True,
                         "message": "کاربر با موفقیت وارد شد",
-                        "data": token.key,
+                        "token": token.key,
                     }
                     return Response(data=context, status=status.HTTP_200_OK)
-                except:
+                except user.DoesNotExist:
                     user_obj = user.objects.create_user(phone_number=phone_number)
-                    token = Token.objects.create(user=user_obj)
+                    token_obj = Token.objects.create(user=user_obj)
                     context = {
                         "is_done": True,
-                        "message": "کاربر با موفقیت ساخته شد",
-                        "data": token.key,
+                        "message": "کاربر با موفیت ساخته شد",
+                        "token": token_obj.key,
                     }
                     return Response(data=context, status=status.HTTP_200_OK)
             else:
                 context = {
                     "is_done": False,
-                    "message": "رمز وارد شده درست نمیباشذ",
+                    "message": "کد ارسال برای کاربر با کد ذزیافتی همخوانی ندارد",
                 }
                 return Response(data=context, status=status.HTTP_400_BAD_REQUEST)
-        else:
-            context = {
-                "is_done": False,
-                "message": serializer.errors,
-            }
-            return Response(data=context, status=status.HTTP_502_BAD_GATEWAY)
+        context = {
+            "is_done": False,
+            "message": "خطا در پارامتر ارسالی",
+        }
+        return Response(data=context, status=status.HTTP_400_BAD_REQUEST)
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
 
 
 #
